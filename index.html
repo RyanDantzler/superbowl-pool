@@ -1,0 +1,357 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+  <script src="../scripts/jquery-1.9.1.min.js"></script>
+  <script src="../scripts/day_hours.js"></script>
+  <script src="../scripts/nfl_game_stats-2.0.2.js"></script>
+  <script src="nfl.js"></script>
+  </head>
+  <style>
+  * {
+    box-sizing: border-box;
+  }
+  html {
+    padding: 0;
+    margin: 0;
+}
+  body {
+    width: 100%;
+    /*height: 100%;*/
+    margin: 0;
+/*    padding: 5px 5px 20px 5px;*/
+    padding: 0 0 20px 0;
+    overflow-x: hidden;
+    font-size: 24px;
+    font-family: Arial;
+    background: #333;
+  }
+
+  h1 {
+    font-size: 1.8em;
+    text-align: center;
+  } 
+
+  h3 {
+    font-size: 1.4em;
+    text-align: center;
+  }
+
+  .row div {
+    width: 9.09%;
+    border: 1px solid #555;
+    height: 10vw;
+    float: left;
+    line-height: 10vw;
+    text-align: center;
+    font-size: 28px;
+    background: white;
+  }
+
+  .row {
+      clear: left;
+  }
+  #row_0 div {
+    border: none;
+    background: #061739;
+    color: white;
+    font-weight: bold;
+  }
+  #row_0 .col_0 {
+    background: none;
+  }
+  .row .col_0 {
+    border: none;
+    background: #d30104;
+    color: white;
+    font-weight: bold;
+  }
+  .board {
+    padding: 0 20px 0 20px;
+    width: 100%;
+    margin: 0 auto 20px;
+    overflow: hidden;
+    zoom: 1;
+  }
+  .squares {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    margin-bottom:20px;
+  }
+/*  .home-team {
+    height: 100%;
+    width: 3%;
+    float: left;
+  }*/
+  .top {
+/*    margin-left: 10%;*/
+    /*margin-bottom: 30px;*/
+    width: 100%;
+    text-align: center;
+    font-size: 32px;
+  }
+  .row .active-col {
+    background: lightgreen;
+  }
+  .active-row div {
+    background: lightgreen;
+  }
+  .active-row .active-col {
+    background: green;
+    color: #FFF;
+  }
+.rotate {
+    position: absolute;
+    -webkit-transform: rotate(-90deg);
+       -moz-transform: rotate(-90deg);
+         -o-transform: rotate(-90deg);
+            transform: rotate(-90deg);
+    width: 50vh;
+    -webkit-transform-origin: 25vw 25vw;
+       -moz-transform-origin: 25vw 25vw;
+         -o-transform-origin: 25vw 25vw;
+            transform-origin: 25vw 25vw;
+            font-size: 32px;
+}
+.row .col_0, #row_0 div {
+  /*visibility: hidden;*/
+/*  color: transparent !important;*/
+  font-size: 36px;
+}
+.play_nums .winner {
+    background-image: url('star.png');
+    background-position: center 2px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: #000;
+}
+.header p {
+  margin: 0;
+    text-align: center;
+    padding: 16px 0;
+    font-size: 46px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: white;
+}
+.game-data img {
+    float: left;
+    width: 150px;
+    margin-right: 25px;
+    box-shadow: 0 0 5px #000;
+}
+
+#home-score, #away-score {
+    font-size: 45px;
+    line-height: 70px;
+    font-family: Arial;
+    font-weight: bold;
+}
+
+.scores {
+    width: 60px;
+    float: left;
+}
+
+.game-data {
+    height: 200px;
+    padding: 25px 50px;
+    color: white;
+}
+
+.header {
+    height: 85px;
+    background: #000 url(superbowl-logo.png) center no-repeat;
+    background-size: contain;
+    padding: 0;
+    margin: 0;
+    border-top: 8px solid #000;
+    border-bottom: 8px solid #000;
+    box-shadow: 0 0 5px #000;
+}
+
+#game-clock, #info {
+    width: 200px;
+    float: left;
+    font-size: 30px;
+    line-height: 70px;
+    font-family: Arial;
+    font-weight: bold;
+    padding: 30px 0 0 50px;
+}
+#info {
+  width: 50%;
+  padding-left: 20px;
+  text-align:center;
+}
+/*.row.active-row .col_0, #row_0 .active-col {
+    font-size: 48px;
+}*/
+  </style>
+  <body>
+    <div class="header">
+      <!-- <p>#showmethemoney</p> -->
+    </div>
+    <div class="game-data">
+      <img src="teams.jpg" />
+      <div class="scores">
+        <div id="home-score">0</div>
+        <div id="away-score">0</div>
+      </div>
+      <div id="game-clock">Q1 15:00</div>
+      <div id="info"></div>
+    </div>
+<!--     <h3><span class="visiting-team"></span> vs <span class="home-team"></span></h3>
+    <h3>Live Score: <span id="game-score"></span> <span id="time"></span></h3> -->
+<!-- <div class="top home-team"></div>
+<div class="rotate visiting-team"></div> -->
+
+    <div class="board">
+      <div class="squares">
+      <div id="row_0" class="row">
+        <div class="col_0"></div>
+        <div class="col_1">0</div>
+        <div class="col_2">0</div>
+        <div class="col_3">0</div>
+        <div class="col_4">0</div>
+        <div class="col_5">0</div>
+        <div class="col_6">0</div>
+        <div class="col_7">0</div>
+        <div class="col_8">0</div>
+        <div class="col_9">0</div>
+        <div class="col_10">0</div>
+      </div>
+      <div id="row_1" class="row play_nums">
+        <div class="col_0">0</div>
+        <div class="col_1">RD</div>
+        <div class="col_2">ML</div>
+        <div class="col_3">JG</div>
+        <div class="col_4">AS</div>
+        <div class="col_5">CG</div>
+        <div class="col_6">LD</div>
+        <div class="col_7">KG</div>
+        <div class="col_8">NG</div>
+        <div class="col_9">NG</div>
+        <div class="col_10">RD</div>
+      </div>
+      <div id="row_2" class="row play_nums">
+        <div class="col_0">0</div>
+        <div class="col_1">LD</div>
+        <div class="col_2">AS</div>
+        <div class="col_3">RD</div>
+        <div class="col_4">JG</div>
+        <div class="col_5">ML</div>
+        <div class="col_6">JG</div>
+        <div class="col_7">RG</div>
+        <div class="col_8">ML</div>
+        <div class="col_9">NG</div>
+        <div class="col_10">ML</div>
+      </div>
+      <div id="row_3" class="row play_nums">
+        <div class="col_0">0</div>
+        <div class="col_1">CG</div>
+        <div class="col_2">AS</div>
+        <div class="col_3">KG</div>
+        <div class="col_4">ML</div>
+        <div class="col_5">RG</div>
+        <div class="col_6">ML</div>
+        <div class="col_7">NG</div>
+        <div class="col_8">RD</div>
+        <div class="col_9">AS</div>
+        <div class="col_10">CG</div>
+      </div>
+      <div id="row_4" class="row play_nums">
+        <div class="col_0">0</div>
+        <div class="col_1">NG</div>
+        <div class="col_2">LD</div>
+        <div class="col_3">JG</div>
+        <div class="col_4">AS</div>
+        <div class="col_5">ML</div>
+        <div class="col_6">RG</div>
+        <div class="col_7">CG</div>
+        <div class="col_8">JG</div>
+        <div class="col_9">RG</div>
+        <div class="col_10">ML</div>
+      </div>
+      <div id="row_5" class="row play_nums">
+        <div class="col_0">0</div>
+        <div class="col_1">KG</div>
+        <div class="col_2">ML</div>
+        <div class="col_3">RG</div>
+        <div class="col_4">LD</div>
+        <div class="col_5">JG</div>
+        <div class="col_6">RD</div>
+        <div class="col_7">NG</div>
+        <div class="col_8">AS</div>
+        <div class="col_9">RG</div>
+        <div class="col_10">CG</div>
+      </div>
+      <div id="row_6" class="row play_nums">
+        <div class="col_0">0</div>
+        <div class="col_1">CG</div>
+        <div class="col_2">LD</div>
+        <div class="col_3">NG</div>
+        <div class="col_4">KG</div>
+        <div class="col_5">NG</div>
+        <div class="col_6">ML</div>
+        <div class="col_7">RD</div>
+        <div class="col_8">RD</div>
+        <div class="col_9">RG</div>
+        <div class="col_10">AS</div>
+      </div>
+      <div id="row_7" class="row play_nums">
+        <div class="col_0">0</div>
+        <div class="col_1">LD</div>
+        <div class="col_2">AS</div>
+        <div class="col_3">CG</div>
+        <div class="col_4">RD</div>
+        <div class="col_5">KG</div>
+        <div class="col_6">RG</div>
+        <div class="col_7">NG</div>
+        <div class="col_8">RD</div>
+        <div class="col_9">ML</div>
+        <div class="col_10">KG</div>
+      </div>
+      <div id="row_8" class="row play_nums">
+        <div class="col_0">0</div>
+        <div class="col_1">JG</div>
+        <div class="col_2">NG</div>
+        <div class="col_3">JG</div>
+        <div class="col_4">KG</div>
+        <div class="col_5">AS</div>
+        <div class="col_6">RG</div>
+        <div class="col_7">ML</div>
+        <div class="col_8">RD</div>
+        <div class="col_9">RD</div>
+        <div class="col_10">LD</div>
+      </div>
+      <div id="row_9" class="row play_nums">
+        <div class="col_0">0</div>
+        <div class="col_1">LD</div>
+        <div class="col_2">RD</div>
+        <div class="col_3">CG</div>
+        <div class="col_4">KG</div>
+        <div class="col_5">CG</div>
+        <div class="col_6">RG</div>
+        <div class="col_7">KG</div>
+        <div class="col_8">LD</div>
+        <div class="col_9">ML</div>
+        <div class="col_10">JG</div>
+      </div>
+      <div id="row_10" class="row play_nums">
+        <div class="col_0">0</div>
+        <div class="col_1">AS</div>
+        <div class="col_2">ML</div>
+        <div class="col_3">JG</div>
+        <div class="col_4">RD</div>
+        <div class="col_5">RD</div>
+        <div class="col_6">ML</div>
+        <div class="col_7">KG</div>
+        <div class="col_8">LD</div>
+        <div class="col_9">CG</div>
+        <div class="col_10">RD</div>
+      </div>
+    </div>
+    </div>
+  </body>
+</html>
