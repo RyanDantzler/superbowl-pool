@@ -6,14 +6,15 @@ var weekGameStats,
 
 $(document).ready(function() {
 	$.ajax({
-		url: 'http://static.nfl.com/liveupdate/scores/scores.json',
+		url: 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard',
 		method: 'GET',
 		dataType: 'json',
-		success: function(data) {
+		success: function (data) {
+			console.log(data);
 			stats = data;
-			updateData();
+			updateView();
 		},
-		error: function(res) {
+		error: function (res) {
 			console.log(res.status);
 		}
 	});
@@ -35,14 +36,15 @@ $(document).ready(function() {
 		});
 	};
 
-	var updateData = function() {
-		superBowl = stats["2021020700"];
-		var timeRemaning = superBowl.clock == undefined ? "0:00" : superBowl.clock,
-			homeScore = superBowl.home.score['T'],
-			visitingScore = superBowl.away.score['T'],
-			lastNumHome = parseInt(superBowl.home.score['T'] % 10),
-			lastNumVisiting = parseInt(superBowl.away.score['T'] % 10),
-			quarter = isNaN(superBowl.qtr) ? superBowl.qtr.toUpperCase() : "Q" + superBowl.qtr;
+	var updateView = function() {
+		superBowl = stats.events[0].competitions[0];
+
+		var timeRemaning = superBowl.status.displayClock == undefined ? "0:00" : superBowl.status.displayClock,
+			homeTeam = superBowl.competitors[0],
+			awayTeam = superBowl.competitors[1],
+			lastNumHome = parseInt(homeTeam.score % 10),
+			lastNumAway = parseInt(awayTeam.score % 10),
+			quarter = superBowl.status.period > 4 || superBowl.status.type.state == "post" ? superBowl.status.type.description.toUpperCase() : "Q" + superBowl.status.period;
 
 			$('.play_nums div:not(.col_0)').each(function() {
 				if (!isNaN($(this).text())) {
@@ -51,15 +53,15 @@ $(document).ready(function() {
 				}
 			});
 
-		$('#home-score').text(superBowl.home.score['T']);
-		$('#away-score').text(superBowl.away.score['T']);
+		$('#home-score').text(homeTeam.score);
+		$('#away-score').text(awayTeam.score);
 
 		if (openCount > 0)
 			$('#info').text(openCount + " SQUARES LEFT").css('color', 'green');
 		else
 			$('#info').text("#SHOWMETHEMONEY").css({'color':'', 'font-style':'italic'});
 
-		if (quarter[0] == "P")
+		if (quarter.indexOf("P") > -1)
 			$('#game-clock').text("Q1 15:00");
 		else {
 
@@ -72,27 +74,28 @@ $(document).ready(function() {
 
 			switch (quarter) {
 				case "Q2":
-					getWinners(parseInt(superBowl.home.score['1']), parseInt(superBowl.away.score['1']));
+					getWinners(parseInt(homeTeam.linescores[0].value), parseInt(awayTeam.linescores[0].value));
 					break;
 				case "H":
 				case "HALFTIME":
 				case "Q3":
-					getWinners(parseInt(superBowl.home.score['1']), parseInt(superBowl.away.score['1']));
-					getWinners(parseInt(superBowl.home.score['1']) + parseInt(superBowl.home.score['2']), parseInt(superBowl.away.score['1']) + parseInt(superBowl.away.score['2']));
+					getWinners(parseInt(homeTeam.linescores[0].value), parseInt(awayTeam.linescores[0].value));
+					getWinners(parseInt(homeTeam.linescores[0].value) + parseInt(homeTeam.linescores[1].value), parseInt(awayTeam.linescores[0].value) + parseInt(awayTeam.linescores[1].value));
 					break;
 				case "Q4":
 				case "OT":
-					getWinners(parseInt(superBowl.home.score['1']), parseInt(superBowl.away.score['1']));
-					getWinners(parseInt(superBowl.home.score['1']) + parseInt(superBowl.home.score['2']), parseInt(superBowl.away.score['1']) + parseInt(superBowl.away.score['2']));
-					getWinners(parseInt(superBowl.home.score['1']) + parseInt(superBowl.home.score['2']) + parseInt(superBowl.home.score['3']), parseInt(superBowl.away.score['1']) + parseInt(superBowl.away.score['2']) + parseInt(superBowl.away.score['3']));
+					getWinners(parseInt(homeTeam.linescores[0].value), parseInt(awayTeam.linescores[0].value));
+					getWinners(parseInt(homeTeam.linescores[0].value) + parseInt(homeTeam.linescores[1].value), parseInt(awayTeam.linescores[0].value) + parseInt(awayTeam.linescores[1].value));
+					getWinners(parseInt(homeTeam.linescores[0].value) + parseInt(homeTeam.linescores[1].value) + parseInt(homeTeam.linescores[2].value), parseInt(awayTeam.linescores[0].value) + parseInt(awayTeam.linescores[1].value) + parseInt(awayTeam.linescores[2].value));
 					break;
 				case "F":
 				case "FINAL":
+				case "FINAL/OT":
 				case "FO":
-					getWinners(parseInt(superBowl.home.score['1']), parseInt(superBowl.away.score['1']));
-					getWinners(parseInt(superBowl.home.score['1']) + parseInt(superBowl.home.score['2']), parseInt(superBowl.away.score['1']) + parseInt(superBowl.away.score['2']));
-					getWinners(parseInt(superBowl.home.score['1']) + parseInt(superBowl.home.score['2']) + parseInt(superBowl.home.score['3']), parseInt(superBowl.away.score['1']) + parseInt(superBowl.away.score['2']) + parseInt(superBowl.away.score['3']));
-					getWinners(parseInt(superBowl.home.score['T']), parseInt(superBowl.away.score['T']));
+					getWinners(parseInt(homeTeam.linescores[0].value), parseInt(awayTeam.linescores[0].value));
+					getWinners(parseInt(homeTeam.linescores[0].value) + parseInt(homeTeam.linescores[1].value), parseInt(awayTeam.linescores[0].value) + parseInt(awayTeam.linescores[1].value));
+					getWinners(parseInt(homeTeam.linescores[0].value) + parseInt(homeTeam.linescores[1].value) + parseInt(homeTeam.linescores[2].value), parseInt(awayTeam.linescores[0].value) + parseInt(awayTeam.linescores[1].value) + parseInt(awayTeam.linescores[2].value));
+					getWinners(parseInt(homeTeam.score), parseInt(awayTeam.score));
 					break;
 				default:
 					break;
@@ -101,18 +104,14 @@ $(document).ready(function() {
 			$('.active-row').removeClass('active-row');
 
 			$('.play_nums .col_0').each(function() {
-				var winningNumVisitor;
-
-				if (parseInt($(this).text()) == lastNumVisiting)
+				if (parseInt($(this).text()) == lastNumAway)
 					$(this).parent().addClass('active-row');
 			});
-
 
 			$('.active-col').removeClass('active-col');
 
 			$('#row_0 div').each(function() {
-				var winningNumHome,
-					winningCol;
+				var winningCol;
 
 				if (parseInt($(this).text()) == lastNumHome) {
 					winningCol = $(this).attr('class');
