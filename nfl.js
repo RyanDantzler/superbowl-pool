@@ -5,19 +5,24 @@ var weekGameStats,
 	openCount = 0;
 
 $(document).ready(function() {
-	$.ajax({
-		url: 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard',
-		method: 'GET',
-		dataType: 'json',
-		success: function (data) {
-			console.log(data);
-			stats = data;
-			updateView();
-		},
-		error: function (res) {
-			console.log(res.status);
-		}
-	});
+	function getData() {
+		$.ajax({
+			url: 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard',
+			method: 'GET',
+			dataType: 'json',
+			success: function (data) {
+				console.log(data);
+				stats = data;
+				updateView();
+
+				// get new data every 15 seconds
+				setTimeout(getData, 15000);
+			},
+			error: function (res) {
+				console.log(res.status);
+			}
+		});
+	};
 
 	var getWinners = function(home, away) {
 		var col;
@@ -120,4 +125,6 @@ $(document).ready(function() {
 			});
 		}
 	};
+
+	getData();
 });
