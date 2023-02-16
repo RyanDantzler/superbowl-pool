@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Super Bowl Pool</title>
+  <link rel="stylesheet" href="styles.css?ver=1" />
+  <link rel="preload" as="image" href="images/check-white.png" />
+</head>
+
+<body data-uuid="{{id}}" data-firstname="{{firstname}}" data-lastname="{{lastname}}" data-initials="{{initials}}">
+  
+{{> nav}}
+
+  <div id="initialScreen">
+    <h1>Super Bowl Pool</h1>
+    {{> title-logo}}
+    <div class="container">
+      <button id="createGameButton" class="button">Create New Game</button>
+      <hr>
+      <button id="browseGamesButton" class="button">Browse Open Games</button>
+    </div>
+  </div>
+
+  <div id="createGameScreen" class="hidden">
+    <div class="container">
+      <button id="createGameBackButton" class="button">Back</button>
+      <hr>
+      <input type="text" placeholder="Game Name" id="lobbyNameInput" required />
+      <div class="form-container">
+        <label class="switch">
+          <input type="checkbox" id="password-req">
+          <span class="slider round"></span>
+        </label>
+        <p class="label">Password Required</p>
+      </div>
+      <input type="text" placeholder="Password" id="setPasswordInput" disabled />
+      <button type="submit" id="newGameButton" class="button" disabled>Create Game</button>
+    </div>
+  </div>
+
+  <div id="browseGamesScreen" class="hidden">
+    <div class="container">
+      <button type="submit" id="browseGamesBackButton" class="button">Back</button>
+      <hr>
+      <div id="lobby-list">
+        <!-- <div class="lobby-item">
+            <h3>Ryan's Game</h3>
+            <div class="lobby-details">
+                <input type="text" placeholder="Password" class="passwordInput"/>
+                <button type="submit" class="button joinGameButton">Join Game</button>
+            </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+  <div id="gameScreen">
+    <div class="header">
+    </div>
+    <div class="game-data">
+      <img src="images/teams.jpg" />
+      <div class="scores">
+        <div id="home-score">0</div>
+        <div id="away-score">0</div>
+      </div>
+      <div id="game-clock">Q1 15:00</div>
+      <div id="info"></div>
+      <div id="tooltip">Select <span id="credits" class="active">10</span> squares and then click Confirm.
+        <button id="confirmSelectionsButton" class="button" disabled="">Confirm</button>
+      </div>
+    </div>
+    <div class="board">
+      <div id="gameboard">
+        <div id="row_0" class="row">
+          <div class="col_0"></div>
+          <div class="col_1">4</div>
+          <div class="col_2">6</div>
+          <div class="col_3">3</div>
+          <div class="col_4">8</div>
+          <div class="col_5">2</div>
+          <div class="col_6">7</div>
+          <div class="col_7">0</div>
+          <div class="col_8">5</div>
+          <div class="col_9">9</div>
+          <div class="col_10">1</div>
+        </div>
+        <div id="row_1" class="row play_nums">
+          <div class="col_0">5</div>
+          <div class="col_1">MD</div>
+          <div class="col_2">RD</div>
+          <div class="col_3">AS</div>
+          <div class="col_4">CG</div>
+          <div class="col_5">LD</div>
+          <div class="col_6">DM</div>
+          <div class="col_7">FN</div>
+          <div class="col_8">DM</div>
+          <div class="col_9">TE</div>
+          <div class="col_10">CG</div>
+        </div>
+        <div id="row_2" class="row play_nums">
+          <div class="col_0">1</div>
+          <div class="col_1">KM</div>
+          <div class="col_2">MD</div>
+          <div class="col_3">RD</div>
+          <div class="col_4">LD</div>
+          <div class="col_5">CG</div>
+          <div class="col_6">FN</div>
+          <div class="col_7">AM</div>
+          <div class="col_8">AS</div>
+          <div class="col_9">JG</div>
+          <div class="col_10">AM</div>
+        </div>
+        <div id="row_3" class="row play_nums">
+          <div class="col_0">2</div>
+          <div class="col_1">LD</div>
+          <div class="col_2">TE</div>
+          <div class="col_3">MD</div>
+          <div class="col_4">RD</div>
+          <div class="col_5">FN</div>
+          <div class="col_6">CG</div>
+          <div class="col_7">AM</div>
+          <div class="col_8">DM</div>
+          <div class="col_9">DE</div>
+          <div class="col_10">LD</div>
+        </div>
+        <div id="row_4" class="row play_nums">
+          <div class="col_0">3</div>
+          <div class="col_1">KM</div>
+          <div class="col_2">LD</div>
+          <div class="col_3">AS</div>
+          <div class="col_4">MD</div>
+          <div class="col_5">TE</div>
+          <div class="col_6">KG</div>
+          <div class="col_7">CG</div>
+          <div class="col_8">RD</div>
+          <div class="col_9">DE</div>
+          <div class="col_10">FN</div>
+        </div>
+        <div id="row_5" class="row play_nums">
+          <div class="col_0">0</div>
+          <div class="col_1">FN</div>
+          <div class="col_2">DM</div>
+          <div class="col_3">CG</div>
+          <div class="col_4">AS</div>
+          <div class="col_5">MD</div>
+          <div class="col_6">KM</div>
+          <div class="col_7">TE</div>
+          <div class="col_8">LD</div>
+          <div class="col_9">RD</div>
+          <div class="col_10">JG</div>
+        </div>
+        <div id="row_6" class="row play_nums">
+          <div class="col_0">9</div>
+          <div class="col_1">CG</div>
+          <div class="col_2">KG</div>
+          <div class="col_3">KG</div>
+          <div class="col_4">KG</div>
+          <div class="col_5">TE</div>
+          <div class="col_6">MD</div>
+          <div class="col_7">DM</div>
+          <div class="col_8">DE</div>
+          <div class="col_9">AS</div>
+          <div class="col_10">RD</div>
+        </div>
+        <div id="row_7" class="row play_nums">
+          <div class="col_0">8</div>
+          <div class="col_1">TE</div>
+          <div class="col_2">CG</div>
+          <div class="col_3">LD</div>
+          <div class="col_4">KM</div>
+          <div class="col_5">RD</div>
+          <div class="col_6">AS</div>
+          <div class="col_7">MD</div>
+          <div class="col_8">DE</div>
+          <div class="col_9">FN</div>
+          <div class="col_10">TE</div>
+        </div>
+        <div id="row_8" class="row play_nums">
+          <div class="col_0">4</div>
+          <div class="col_1">JG</div>
+          <div class="col_2">AS</div>
+          <div class="col_3">FN</div>
+          <div class="col_4">KG</div>
+          <div class="col_5">KM</div>
+          <div class="col_6">RD</div>
+          <div class="col_7">LD</div>
+          <div class="col_8">TE</div>
+          <div class="col_9">MD</div>
+          <div class="col_10">JG</div>
+        </div>
+        <div id="row_9" class="row play_nums">
+          <div class="col_0">6</div>
+          <div class="col_1">AS</div>
+          <div class="col_2">AM</div>
+          <div class="col_3">MD</div>
+          <div class="col_4">FN</div>
+          <div class="col_5">AM</div>
+          <div class="col_6">TE</div>
+          <div class="col_7">RD</div>
+          <div class="col_8">CG</div>
+          <div class="col_9">LD</div>
+          <div class="col_10">AS</div>
+        </div>
+        <div id="row_10" class="row play_nums">
+          <div class="col_0">7</div>
+          <div class="col_1">RD</div>
+          <div class="col_2">FN</div>
+          <div class="col_3">JG</div>
+          <div class="col_4">DE</div>
+          <div class="col_5">AS</div>
+          <div class="col_6">LD</div>
+          <div class="col_7">FN</div>
+          <div class="col_8">TE</div>
+          <div class="col_9">CG</div>
+          <div class="col_10">MD</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js"></script>
+  <script src="index.js"></script>
+</body>
+
+</html>

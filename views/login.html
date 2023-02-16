@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Bowl Pool</title>
+  <link rel="stylesheet" href="styles.css?ver=1" />
+</head>
+
+<body>
+  
+{{> nav}}
+
+  <div id="initialScreen">
+    <h1>Super Bowl Pool</h1>
+    {{> title-logo}}
+    <div class="container">
+      <form action="/login" method="post" id="login-form">
+      <input type="text" name="username" placeholder="Username" id="usernameInput" required maxlength="100" />
+      <input type="password" name="password" placeholder="Password" id="passwordInput" required />
+      <button type="submit" id="loginButton" class="button">Login</button>
+      </form>
+      <hr>
+      <button id="signUpButton" class="button">Sign Up</button>
+    </div>
+  </div>
+  
+  <div id="registerScreen" class="hidden">
+    <div class="container">
+      <button id="registerBackButton" class="button">Back</button>
+      <hr>
+      <form action="/register" method="post" id="register-form">
+      <input type="text" name="username" placeholder="Username" id="registerUsernameInput" required maxlength="25" />
+      <input type="password" name="password" placeholder="Password" id="registerPasswordInput" required />
+      <input type="text" name="firstname" placeholder="First Name" id="firstNameInput" required maxlength="25" />
+      <input type="text" name="lastname" placeholder="Last Name" id="lastNameInput" required maxlength="25" />
+      <button type="submit" id="registerButton" class="button">Register</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js"></script>
+  <script src="login.js"></script>
+</body>
+
+</html>

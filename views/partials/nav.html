@@ -1,0 +1,27 @@
+<header></header>
+<div id="nav-container" class="full">
+  <div class="bg"></div>
+  <div class="menu-button" tabindex="0">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </div>
+  <div id="nav-content" tabindex="0">
+    <ul>
+      <li><a href="/">Game Lobby</a></li>
+        {{#admin}}<li>
+          <div>
+            <label for="players">Add Credits:</label>
+            <select id="playersSelect" name="players"></select>
+            <select id="creditsSelect" name="credits"></select>
+            <button id="addCreditsButton" class="button">Send</button>
+          </div>
+        </li>{{/admin}}
+      {{#admin}}<li><a href="#" id="lockBoardButton">Lock Board</a></li>{{/admin}}
+      {{#admin}}<li><a href="#" id="drawNumbersButton" class="disabled">Draw Numbers</a></li>{{/admin}}
+      <li><a href="https://github.com/RyanDantzler/superbowl-pool">About</a></li>
+      {{#authenticated}}<li><a href="/logout">Logout</a></li>{{/authenticated}}
+    </ul>
+  </div>
+</div>
+<script defer src="nav.js"></script>
