@@ -9,16 +9,20 @@
   <div id="nav-content" tabindex="0">
     <ul>
       <li><a href="/">Game Lobby</a></li>
-        {{#admin}}<li>
-          <div>
-            <label for="players">Add Credits:</label>
-            <select id="playersSelect" name="players"></select>
-            <select id="creditsSelect" name="credits"></select>
-            <button id="addCreditsButton" class="button">Send</button>
-          </div>
-        </li>{{/admin}}
-      {{#admin}}<li><a href="#" id="lockBoardButton">Lock Board</a></li>{{/admin}}
-      {{#admin}}<li><a href="#" id="drawNumbersButton" class="disabled">Draw Numbers</a></li>{{/admin}}
+      {{#admin}}
+      <li><a href="#" id="demoModeButton" class="disabled">Demo Mode: <span id="demoMode">Off</span></a></li>
+      <li><a href="#" id="simulateButton" class="disabled">Simulate Game</a></li>
+      <li>
+        <div>
+          <label id="addCreditsLabel" for="players" class="disabled">Add Credits:</label>
+          <select id="playersSelect" name="players" disabled></select>
+          <select id="creditsSelect" name="credits" disabled></select>
+          <button id="addCreditsButton" class="button" disabled>Send</button>
+        </div>
+      </li>
+      <li><a href="#" id="lockBoardButton" class="disabled">Lock Board</a></li>
+      <li><a href="#" id="drawNumbersButton" class="disabled">Draw Numbers</a></li>
+      {{/admin}}
       <li><a href="https://github.com/RyanDantzler/superbowl-pool">About</a></li>
       {{#authenticated}}<li><a href="/logout">Logout</a></li>{{/authenticated}}
     </ul>

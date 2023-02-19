@@ -14,6 +14,7 @@ const MongoStore = require('connect-mongo')(session);
 const URI = process.env.MONGO_URI;
 const store = new MongoStore({ url: URI });
 const mustacheExpress = require('mustache-express');
+const favicon = require('serve-favicon');
 
 // register '.html' extension with The Mustache Express
 app.engine('html', mustacheExpress(__dirname + '/views/partials', '.html'));
@@ -21,6 +22,7 @@ app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
 
 app.use(express.static(process.cwd() + '/public'));
+app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
 // limits the request body size passed. Default is 100kb
 app.use(express.json({ limit: "100kb" }));

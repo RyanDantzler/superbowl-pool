@@ -13,8 +13,9 @@ let gameData = {
   status: {}
 };
 
-// const socket = io('https://superbowl-pool.ryandantzler.repl.co');
-const socket = io('https://superbowl-pool-server.onrender.com');
+const socket = io('https://superbowl-pool-server.ryandantzler.repl.co');
+// const socket = io('https://superbowl-pool-server-bitlab.onrender.com');
+// const socket = io('https://superbowl-pool-server.onrender.com');
 // const socket = io('http://localhost:3000');
 
 // ----------------------------------------------------------
@@ -108,7 +109,7 @@ function confirmSelections() {
   for (let i = 0; i < selections.length; i++) {
     selections[i].textContent = user.identifier;
     selections[i].classList.remove("selected");
-    selections[i].classList.add("glow","owned");
+    selections[i].classList.add("glow", "owned");
   }
 
   //TODO: tell server that selections are confirmed
@@ -121,7 +122,7 @@ function handleSelectSquare() {
 
     console.log("selectSquare");
     console.log(user);
-      
+
     socket.emit("squareSelected", {
       user: user,
       squareId: this.dataset.squareId
@@ -139,17 +140,17 @@ function handleSelectSquare() {
     });
   }
 
-let openCount = document.getElementsByClassName('available').length;
-let info = document.getElementById('info');
-      
-if (openCount > 0) {
+  let openCount = document.getElementsByClassName('available').length;
+  let info = document.getElementById('info');
+
+  if (openCount > 0) {
     info.textContent = openCount + " SQUARES LEFT";
     info.style.color = "#03a203";
   } else {
     info.textContent = "#SHOWMETHEMONEY";
     info.style.color = '';
     info.style.fontStyle = "italic";
-}
+  }
 
   creditsDisplay.textContent = user.credits;
   creditsDisplay.classList = user.credits > 0 ? "active" : "";
@@ -161,11 +162,23 @@ if (openCount > 0) {
 // ----------------------------------------------------------
 // admin controls
 // ----------------------------------------------------------
+const demoModeBtn = document.getElementById('demoModeButton');
+const demoModeDisplay = document.getElementById('demoMode');
+const simulateBtn = document.getElementById('simulateButton');
 const lockBoardBtn = document.getElementById('lockBoardButton');
 const drawNumbersBtn = document.getElementById('drawNumbersButton');
+const addCreditsLbl = document.getElementById('addCreditsLabel');
 const playersSelectList = document.getElementById('playersSelect');
 const creditsSelectList = document.getElementById('creditsSelect');
 const addCreditsBtn = document.getElementById('addCreditsButton');
+
+if (demoModeBtn) {
+  demoModeBtn.addEventListener('click', toggleDemoMode);
+}
+
+if (simulateBtn) {
+  simulateBtn.addEventListener('click', simulateGame);
+}
 
 if (lockBoardBtn) {
   lockBoardBtn.addEventListener('click', lockBoard);
@@ -177,6 +190,16 @@ if (drawNumbersBtn) {
 
 if (addCreditsBtn) {
   addCreditsBtn.addEventListener('click', addCredits);
+}
+
+function toggleDemoMode() {
+  socket.emit('toggleDemoMode');
+}
+
+function simulateGame() {
+  toggleNavigation();
+  simulateBtn.classList.add('disabled');
+  socket.emit('simulateGame');
 }
 
 function lockBoard() {
@@ -195,7 +218,7 @@ function addCredits() {
   alert("credits sent");
   addCreditsBtn.disabled = true;
   setTimeout(() => { addCreditsBtn.disabled = false }, 1500);
-  
+
   socket.emit('addCredits', { user: playersSelectList.value, credits: creditsSelect.value });
 }
 
@@ -219,6 +242,7 @@ socket.on('gameDataUpdate', handleGameDataUpdate);
 socket.on('drawNumbers', handleDrawNumbers);
 socket.on('boardLocked', handleBoardLocked);
 socket.on('addCredits', handleAddCredits);
+socket.on('demoMode', handleDemoMode);
 
 function handleConnected(data) {
   updateGameData(data);
@@ -324,24 +348,24 @@ function handleBoardUpdate(data) {
     square.addEventListener('click', handleSelectSquare);
   }
 
-    let openCount = document.getElementsByClassName('available').length;
-    let info = document.getElementById('info');
-          
-    if (openCount > 0) {
-        info.textContent = openCount + " SQUARES LEFT";
-        info.style.color = "#03a203";
-      } else {
-        info.textContent = "#SHOWMETHEMONEY";
-        info.style.color = '';
-        info.style.fontStyle = "italic";
-    }
+  let openCount = document.getElementsByClassName('available').length;
+  let info = document.getElementById('info');
+
+  if (openCount > 0) {
+    info.textContent = openCount + " SQUARES LEFT";
+    info.style.color = "#03a203";
+  } else {
+    info.textContent = "#SHOWMETHEMONEY";
+    info.style.color = '';
+    info.style.fontStyle = "italic";
+  }
 }
 
 function handleGameDataUpdate(data) {
   console.log("game data update.");
-    if (!data) {
-        return;
-    }
+  if (!data) {
+    return;
+  }
   updateGameData(data);
   updateView(gameData);
 }
@@ -355,7 +379,7 @@ function updateGameData(data) {
   for (const score in data.competitors[0].linescores) {
     gameData.home.linescores.push(parseInt(data.competitors[0].linescores[score].value));
   }
-  
+
   gameData.away = {
     score: parseInt(data.competitors[1].score),
     linescores: []
@@ -364,7 +388,7 @@ function updateGameData(data) {
   for (const score in data.competitors[1].linescores) {
     gameData.away.linescores.push(parseInt(data.competitors[1].linescores[score].value));
   }
-  
+
   gameData.state = data.status.type.state;
   gameData.clock = data.status.displayClock;
   gameData.description = data.status.type.description.toUpperCase();
@@ -424,19 +448,54 @@ function handleDrawNumbers(numbers) {
 }
 
 function handleAddCredits(data) {
-    console.log("add credits");
-    console.log(data);
-    console.log(`before: ${user.credits}, after: ${data.players[user.id].credits}`);
-    
-    user.credits = data.players[user.id].credits;
-    
-    creditsDisplay.textContent = user.credits;
-    
-    if (user.credits > 0) {
-        confirmSelectionsBtn.disabled = true;
-        creditsDisplay.classList = "active";
-        tooltipDialog.classList.add('active');
-    }
+  console.log("add credits");
+  console.log(data);
+  console.log(`before: ${user.credits}, after: ${data.players[user.id].credits}`);
+
+  user.credits = data.players[user.id].credits;
+
+  creditsDisplay.textContent = user.credits;
+
+  if (user.credits > 0) {
+    confirmSelectionsBtn.disabled = true;
+    creditsDisplay.classList = "active";
+    tooltipDialog.classList.add('active');
+  }
+}
+
+function handleDemoMode(enabled) {
+  console.log("demo mode enabled: " + enabled);
+
+  if (demoModeDisplay) {
+    demoModeDisplay.textContent = enabled ? "On" : "Off";
+  }
+
+  if (simulateBtn) {
+    simulateBtn.classList = enabled ? "" : "disabled";
+  }
+
+  if (enabled) {
+    gameData.home = {
+      score: 0,
+      linescores: []
+    };
+
+    gameData.away = {
+      score: 0,
+      linescores: []
+    };
+
+    gameData.state = "in";
+    gameData.clock = "15:00";
+    gameData.description = "";
+    gameData.period = 1;
+
+    clearWinners();
+  }
+
+  //TODO: refresh live data from server when demo mode disabled
+
+  updateView(gameData);
 }
 
 // ----------------------------------------------------------
@@ -464,7 +523,9 @@ function initGame(state) {
   clearGameBoard(); //TODO: remove in production
   setupGameBoard();
   loadGameBoard(state.board, state.numbers, state.locked);
-  updateView(gameData);
+  if (!state.demoMode) {
+    updateView(gameData);
+  }
   setupAdminControls(state);
 }
 
@@ -485,17 +546,39 @@ function setupGameBoard() {
   }
 }
 
-function setupAdminControls(data) {   
+function setupAdminControls(data) {
   if (playersSelectList) {
-      for (const player in data.players) {
-          playersSelectList.add(new Option(data.players[player].firstname, data.players[player].id));
-      }
+    for (const player in data.players) {
+      playersSelectList.add(new Option(data.players[player].firstname, data.players[player].id));
+    }
   }
-    
+
   if (creditsSelectList) {
-      for (let i = 1; i < 100; i++) {
-          creditsSelectList.add(new Option(i));
-      }
+    for (let i = 1; i < 100; i++) {
+      creditsSelectList.add(new Option(i));
+    }
+    creditsSelectList.disabled = false;
+  }
+
+  if (playersSelectList) {
+    playersSelectList.disabled = false;
+  }
+
+  if (addCreditsLbl) {
+    addCreditsLbl.classList.remove('disabled');
+  }
+
+  if (addCreditsBtn) {
+    addCreditsBtn.disabled = false;
+  }
+
+  if (demoModeDisplay) {
+    demoModeDisplay.textContent = data.demoMode ? "On" : "Off";
+    demoModeBtn.classList.remove('disabled');
+  }
+
+  if (simulateBtn) {
+    simulateBtn.classList = data.demoMode ? "" : "disabled";
   }
 }
 
@@ -577,18 +660,22 @@ function getWinners(homeScore, awayScore) {
   });
 }
 
+function clearWinners() {
+  let winners = document.querySelectorAll('.winner');
+
+  winners.forEach(node => {
+    node.classList.remove('winner');
+  });
+}
+
 function updateView(game) {
   let openCount = 0;
   let home = game.home;
   let away = game.away;
   let lastNumHome = parseInt(home.score % 10);
   let lastNumAway = parseInt(away.score % 10);
-  let quarter = "Q" + game.period + " " + game.clock;
+  let quarter = "Q" + game.period;
 
-    if (game.description == "HALFTIME" || game.state == "post") {
-        quarter = game.description;
-    }
-    
   let info = document.getElementById('info');
   let gameClock = document.getElementById('game-clock');
 
@@ -611,7 +698,13 @@ function updateView(game) {
   document.getElementById('away-score').textContent = away.score;
 
   if (game.state !== "pre") {
-    gameClock.textContent = quarter;
+
+    if (game.description == "HALFTIME" || game.state == "post") {
+      gameClock.textContent = game.description;
+      quarter = game.description;
+    } else {
+      gameClock.textContent = quarter + " " + game.clock;
+    }
 
     switch (quarter) {
       case "Q2":
@@ -620,24 +713,24 @@ function updateView(game) {
       case "HALFTIME":
       case "Q3":
         getWinners(home.linescores[0], away.linescores[0]);
-        getWinners(home.linescores[0] + home.linescores[1], 
-                   away.linescores[0] + away.linescores[1]);
+        getWinners(home.linescores[0] + home.linescores[1],
+          away.linescores[0] + away.linescores[1]);
         break;
       case "Q4":
       case "OT":
         getWinners(home.linescores[0], away.linescores[0]);
-        getWinners(home.linescores[0] + home.linescores[1], 
-                   away.linescores[0] + away.linescores[1]);
+        getWinners(home.linescores[0] + home.linescores[1],
+          away.linescores[0] + away.linescores[1]);
         getWinners(home.linescores[0] + home.linescores[1] + home.linescores[2],
-                   away.linescores[0] + away.linescores[1] + away.linescores[2]);
+          away.linescores[0] + away.linescores[1] + away.linescores[2]);
         break;
       case "FINAL":
       case "FINAL/OT":
         getWinners(home.linescores[0], away.linescores[0]);
-        getWinners(home.linescores[0] + home.linescores[1], 
-                   away.linescores[0] + away.linescores[1]);
+        getWinners(home.linescores[0] + home.linescores[1],
+          away.linescores[0] + away.linescores[1]);
         getWinners(home.linescores[0] + home.linescores[1] + home.linescores[2],
-                   away.linescores[0] + away.linescores[1] + away.linescores[2]);
+          away.linescores[0] + away.linescores[1] + away.linescores[2]);
         getWinners(home.score, away.score);
         break;
       default:

@@ -303,7 +303,7 @@ p.error-msg {
 
 #lobby-list {
     overflow-y: scroll;
-    max-height: 75%;
+    max-height: 60.5%;
     width: 100%;
     touch-action: auto;
     background: transparent;
@@ -836,7 +836,7 @@ header {
 
     #addCreditsButton {
         background: #49a09d;
-        padding: 4px 10px;
+        padding: 5px 10px 4px 10px;
         margin-left: 5px;
         height: auto;
         width: auto;
@@ -846,13 +846,10 @@ header {
         text-transform: uppercase;
     }
     
-    #creditAmount {
-        width: 35px;
-        text-align: center;
+    #creditsSelect {
+        min-height: 23px;
+        min-width: 35px;
         border-radius: 3px;
-        padding: 3px 5px;
-        border: none;
-        margin-left: 5px;
     }
     
     #playersSelect {
@@ -875,7 +872,7 @@ header {
 #nav-content {
     padding: 38px 20px 20px;
     top: 51px;
-    height: calc(100% - 52px);
+    height: calc(100% - 51px);
 }
 
 #gameScreen {
