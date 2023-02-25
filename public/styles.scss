@@ -303,7 +303,7 @@ p.error-msg {
 
 #lobby-list {
     overflow-y: scroll;
-    max-height: 60.5%;
+    max-height: 62%;
     width: 100%;
     touch-action: auto;
     background: transparent;
@@ -647,6 +647,7 @@ p.error-msg {
     flex-direction: column;
     justify-content: center;
     width: 272px;
+    max-height: 100%;
 }
 
 header {

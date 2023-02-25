@@ -171,6 +171,7 @@ const addCreditsLbl = document.getElementById('addCreditsLabel');
 const playersSelectList = document.getElementById('playersSelect');
 const creditsSelectList = document.getElementById('creditsSelect');
 const addCreditsBtn = document.getElementById('addCreditsButton');
+const deleteGameBtn = document.getElementById('deleteGameButton');
 
 if (demoModeBtn) {
   demoModeBtn.addEventListener('click', toggleDemoMode);
@@ -190,6 +191,10 @@ if (drawNumbersBtn) {
 
 if (addCreditsBtn) {
   addCreditsBtn.addEventListener('click', addCredits);
+}
+
+if (deleteGameBtn) {
+  deleteGameBtn.addEventListener('click', deleteGame);
 }
 
 function toggleDemoMode() {
@@ -220,6 +225,16 @@ function addCredits() {
   setTimeout(() => { addCreditsBtn.disabled = false }, 1500);
 
   socket.emit('addCredits', { user: playersSelectList.value, credits: creditsSelect.value });
+}
+
+function deleteGame() {
+  if (confirm("Are you sure you want to delete the game?")) {
+    deleteGameBtn.disabled = true;
+
+    socket.emit('deleteGame');
+
+    window.location.href = "/";
+  }
 }
 
 // ----------------------------------------------------------
@@ -579,6 +594,10 @@ function setupAdminControls(data) {
 
   if (simulateBtn) {
     simulateBtn.classList = data.demoMode ? "" : "disabled";
+  }
+
+  if (deleteGameBtn) {
+    deleteGameBtn.classList.remove('disabled');
   }
 }
 
