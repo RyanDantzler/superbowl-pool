@@ -2,16 +2,20 @@
 Super Bowl Pool App
 
 Features of the project:
-- real-time scoring
+- real-time scoring with data from [ESPN Scoreboard][1]
 - automatic winner determination
-- responsive grid layout
-- user-friendly UI
+- [MongoDB][5] integrated user account system with [Passport][4] authentication
+- host public and private games
+- admin controls
+- responsive mobile friendly UI
+- websocket enhanced UX with [Socket.IO][3]
 
-This project consumes a scoreboard data API from ESPN.com which can be found [here][1].
-
-A working version of the app can be found here: [http://ryandantzler.com/nfl/][2]
+A working version of the app can be found here: [https://superbowl-pool.ryandantzler.repl.co][2]
 
 ### I'm going to Disney World!
 
-[1]:http://www.nfl.com/liveupdate/scorestrip/postseason/ss.xml
-[2]:http://ryandantzler.com/nfl/
+[1]:https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard
+[2]:https://superbowl-pool.ryandantzler.repl.co
+[3]:https://socket.io/
+[4]:https://www.passportjs.org/
+[5]:https://www.mongodb.com/
