@@ -24,7 +24,7 @@ const socket = io('https://superbowl-pool-server.ryandantzler.repl.co');
 const initialScreen = document.getElementById('initialScreen');
 const createGameBtn = document.getElementById('createGameButton');
 const browseGamesBtn = document.getElementById('browseGamesButton');
-const navContainer = document.getElementById('nav-container');
+// const navContainer = document.getElementById('nav-container');
 
 createGameBtn.addEventListener('click', createGame);
 browseGamesBtn.addEventListener('click', browseGames);
@@ -150,6 +150,10 @@ function handleSelectSquare() {
     info.textContent = "#SHOWMETHEMONEY";
     info.style.color = '';
     info.style.fontStyle = "italic";
+    
+    if (lockBoardBtn) {
+      lockBoardBtn.classList.remove('disabled');
+    }
   }
 
   creditsDisplay.textContent = user.credits;
@@ -524,7 +528,7 @@ function initGame(state) {
 
   console.log(state);
 
-  navContainer.classList.remove('full');
+  document.getElementById('nav-container').classList.remove('full');
   initialScreen.style.display = "none";
   createGameScreen.style.display = "none";
   browseGamesScreen.style.display = "none";

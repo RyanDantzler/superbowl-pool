@@ -29,7 +29,7 @@ body {
     padding: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 }
 
@@ -256,6 +256,10 @@ svg.Icon {
     transform: translateX(-100%);
 }
 
+#browseGamesScreen {
+    height: 80%;
+}
+
 #browseGamesScreen.hidden,
 #createGameScreen.hidden,
 #registerScreen.hidden {
@@ -303,7 +307,7 @@ p.error-msg {
 
 #lobby-list {
     overflow-y: scroll;
-    max-height: 62%;
+    max-height: 80%;
     width: 100%;
     touch-action: auto;
     background: transparent;
@@ -363,6 +367,7 @@ p.error-msg {
     flex-direction: column;
     justify-content: space-between;
     width: 100%;
+    height: 100%;
 
     .row div {
         width: 9.09%;
@@ -642,48 +647,8 @@ p.error-msg {
 }
 
 .container {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     width: 272px;
     max-height: 100%;
-}
-
-header {
-    display: flex;
-    position: fixed;
-    width: 100%;
-    height: 70px;
-    /* background: #212121; */
-    color: #fff;
-    justify-content: center;
-    align-items: center;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-    &.nav-open~#nav-container {
-        #nav-content {
-            left: 0;
-        }
-
-        .icon-bar:nth-of-type(1) {
-            transform: translate3d(0, 8px, 0) rotate(45deg);
-        }
-
-        .icon-bar:nth-of-type(2) {
-            opacity: 0;
-        }
-
-        .icon-bar:nth-of-type(3) {
-            transform: translate3d(0, -8px, 0) rotate(-45deg);
-        }
-
-        .bg {
-            visibility: visible;
-            opacity: .6;
-            pointer-events: auto;
-        }
-    }
 }
 
 #nav-container {
@@ -696,6 +661,30 @@ header {
     font-weight: 600;
     letter-spacing: .03em;
     color: #212121;
+
+    &.nav-open {
+        #nav-content {
+            left: 0;
+        }
+    
+        .icon-bar:nth-of-type(1) {
+            transform: translate3d(0, 8px, 0) rotate(45deg);
+        }
+    
+        .icon-bar:nth-of-type(2) {
+            opacity: 0;
+        }
+    
+        .icon-bar:nth-of-type(3) {
+            transform: translate3d(0, -8px, 0) rotate(-45deg);
+        }
+    
+        .bg {
+            visibility: visible;
+            opacity: .6;
+            pointer-events: auto;
+        }
+    }
 
     &.full {
         .bg {
