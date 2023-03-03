@@ -146,6 +146,10 @@ function handleSelectSquare() {
   if (openCount > 0) {
     info.textContent = openCount + " SQUARES LEFT";
     info.style.color = "#03a203";
+
+    if (lockBoardBtn) {
+      lockBoardBtn.classList.add('disabled');
+    }
   } else {
     info.textContent = "#SHOWMETHEMONEY";
     info.style.color = '';
@@ -262,6 +266,7 @@ socket.on('drawNumbers', handleDrawNumbers);
 socket.on('boardLocked', handleBoardLocked);
 socket.on('addCredits', handleAddCredits);
 socket.on('demoMode', handleDemoMode);
+socket.on('newPlayer', handleNewPlayer);
 
 function handleConnected(data) {
   updateGameData(data);
@@ -373,10 +378,18 @@ function handleBoardUpdate(data) {
   if (openCount > 0) {
     info.textContent = openCount + " SQUARES LEFT";
     info.style.color = "#03a203";
+    
+    if (lockBoardBtn) {
+      lockBoardBtn.classList.add('disabled');
+    }
   } else {
     info.textContent = "#SHOWMETHEMONEY";
     info.style.color = '';
     info.style.fontStyle = "italic";
+
+    if (lockBoardBtn) {
+      lockBoardBtn.classList.remove('disabled');
+    }
   }
 }
 
@@ -475,7 +488,7 @@ function handleAddCredits(data) {
 
   creditsDisplay.textContent = user.credits;
 
-  if (user.credits > 0) {
+  if (!data.locked && user.credits > 0) {
     confirmSelectionsBtn.disabled = true;
     creditsDisplay.classList = "active";
     tooltipDialog.classList.add('active');
@@ -515,6 +528,15 @@ function handleDemoMode(enabled) {
   //TODO: refresh live data from server when demo mode disabled
 
   updateView(gameData);
+}
+
+function handleNewPlayer(playersList) {
+    if (playersSelectList) {
+      playersSelectList.length = 0;
+      for (const player in playersList) {
+        playersSelectList.add(new Option(playersList[player].firstname, playersList[player].id));
+      }
+    }
 }
 
 // ----------------------------------------------------------
@@ -566,6 +588,8 @@ function setupGameBoard() {
 }
 
 function setupAdminControls(data) {
+  let openCount = document.getElementsByClassName('available').length;
+  
   if (playersSelectList) {
     for (const player in data.players) {
       playersSelectList.add(new Option(data.players[player].firstname, data.players[player].id));
@@ -591,6 +615,22 @@ function setupAdminControls(data) {
     addCreditsBtn.disabled = false;
   }
 
+  if (lockBoardBtn) {
+    if (data.locked) {
+      lockBoardBtn.classList.add('disabled');
+  
+      if (drawNumbersBtn) {
+        if (data.numbers.length > 0) {
+          drawNumbersBtn.classList.add('disabled');
+        } else {
+          drawNumbersBtn.classList.remove('disabled');
+        }
+      }
+    } else if (openCount === 0) {
+      lockBoardBtn.classList.remove('disabled');
+    }
+  }
+
   if (demoModeDisplay) {
     demoModeDisplay.textContent = data.demoMode ? "On" : "Off";
     demoModeBtn.classList.remove('disabled');
@@ -608,20 +648,8 @@ function setupAdminControls(data) {
 function loadGameBoard(board, numbers, locked) {
   if (locked) {
     document.getElementById('gameboard').classList.add('locked');
-
-    if (lockBoardBtn) {
-      lockBoardBtn.classList.add('disabled');
-    }
-
-    if (drawNumbersBtn) {
-      if (numbers.length > 0) {
-        drawNumbersBtn.classList.add('disabled');
-      } else {
-        drawNumbersBtn.classList.remove('disabled');
-      }
-    }
   }
-
+  
   let rows = document.querySelectorAll('.play_nums');
 
   for (let i = 0; i < rows.length; i++) {
